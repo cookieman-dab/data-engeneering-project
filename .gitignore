@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual env
+*.venv
+env/
+venv/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Data files
+*.csv
+*.tsv
+*.parquet
+*.db
+*.sqlite
+*.h5
+
+# Environment files
+.env
+.env.*
+
+# Docker
+*.pid
+
+# GCP Credentials
+secrets/
+*.json
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# Bruin
+.bruin/
+
+# Others
+*.bak
+*.swp
+*.tmp

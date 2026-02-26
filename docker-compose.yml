@@ -1,0 +1,26 @@
+services:
+  pipeline:
+    build: .                              # usa il Dockerfile qui sopra
+    env_file: .env                        # variabili d'ambiente
+    volumes:
+      - ./secrets/sa.json:/secrets/sa.json:ro   # credenziali GCP
+    command: bruin run /app/pipeline/     # comando da eseguire
+
+
+services:
+  pipeline:
+    build: .
+    env_file: .env
+    volumes:
+      - ./secrets/sa.json:/secrets/sa.json:ro
+    command: bruin run /app/pipeline/
+
+  jupyter:                              # ← solo per sviluppo, non per produzione
+    build: .
+    env_file: .env
+    volumes:
+      - ./secrets/sa.json:/secrets/sa.json:ro
+      - ./notebooks:/app/notebooks      # cartella notebooks in locale
+    ports:
+      - "8888:8888"
+    command: jupyter notebook --ip=0.0.0.0 --allow-root --no-browser
