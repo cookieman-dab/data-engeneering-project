@@ -1,0 +1,15 @@
+version: 1
+assets:
+  - name: raw.nasa_power_ingest
+    type: python
+    path: assets/raw/nasa_power_ingest.py
+    
+  - name: staging.stg_solar_irradiance
+    type: bq.sql
+    path: assets/staging/stg_solar_irradiance.sql
+    upstreams: [raw.nasa_power_ingest]
+    
+  - name: mart.solar_production
+    type: bq.sql
+    path: assets/mart/solar_production.sql
+    upstreams: [staging.stg_solar_irradiance]

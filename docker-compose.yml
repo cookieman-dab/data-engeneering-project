@@ -1,26 +1,41 @@
 services:
   pipeline:
-    build: .                              # usa il Dockerfile qui sopra
-    env_file: .env                        # variabili d'ambiente
-    volumes:
-      - ./secrets/sa.json:/secrets/sa.json:ro   # credenziali GCP
-    command: bruin run /app/pipeline/     # comando da eseguire
-
-
-services:
-  pipeline:
     build: .
     env_file: .env
     volumes:
-      - ./secrets/sa.json:/secrets/sa.json:ro
+      - ./secrets:/secrets/:ro
+      - ./pipeline:/app/pipeline
     command: bruin run /app/pipeline/
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/bruin-sa.json
 
-  jupyter:                              # ← solo per sviluppo, non per produzione
+  jupyter:
     build: .
     env_file: .env
     volumes:
-      - ./secrets/sa.json:/secrets/sa.json:ro
-      - ./notebooks:/app/notebooks      # cartella notebooks in locale
+      - ./secrets:/secrets/:ro
+      - ./notebooks:/app/notebooks      # crea prima ./notebooks/
     ports:
       - "8888:8888"
-    command: jupyter notebook --ip=0.0.0.0 --allow-root --no-browser
+    command: jupyter lab --ip=0.0.0.0 --allow-root --no-browser
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/bruin-sa.json
+
+  terraform:
+    build: .
+    volumes:
+      - ./secrets:/secrets/          # ✅ read-write per creare bruin-sa.json
+    working_dir: /app/terraform
+    command: >                      # ✅ Multi-line command
+      sh -c "
+        echo '🔨 Inizializzazione Terraform...'
+        terraform init &&
+        echo '📋 Plan...'
+        terraform plan &&
+        echo '🚀 Apply automatico...'
+        terraform apply -auto-approve &&
+      "
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/sa.json
+    stdin_open: false               # ❌ Non serve per comando automatico
+    tty: true                       # ✅ Utile per log colorati

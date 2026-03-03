@@ -8,7 +8,9 @@ RUN curl -fsSL https://releases.hashicorp.com/terraform/1.7.0/terraform_1.7.0_li
     -o terraform.zip && unzip terraform.zip && mv terraform /usr/local/bin/ && rm terraform.zip
 
 # Installa Bruin CLI
-RUN curl -fsSL https://raw.githubusercontent.com/bruin-data/bruin/main/install.sh | sh
+RUN curl -fsSL https://raw.githubusercontent.com/bruin-data/bruin/main/install.sh | bash \
+    && mv /root/.local/bin/bruin /usr/local/bin/bruin \
+    && chmod +x /usr/local/bin/bruin
 
 # Installa dipendenze Python
 COPY requirements.txt .
@@ -19,3 +21,7 @@ COPY pipeline/ /app/pipeline/
 COPY terraform/ /app/terraform/
 
 WORKDIR /app
+
+# Inizializza Git nel container (Bruin lo richiede)
+RUN git config --global user.email "pipeline@example.com" \
+    && git config --global user.name "Pipeline"
