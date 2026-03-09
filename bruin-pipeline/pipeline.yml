@@ -1,0 +1,11 @@
+name: solar-pipeline
+schedule: "0 0 1 * *"   # Runs on the 1st of every month at midnight
+
+default_connections:
+  google_cloud_platform: "gcp-solar"
+  bigquery: "bq-solar"
+
+variables:
+  project_id:
+    type: string
+    default: "${GCP_PROJECT_ID}"

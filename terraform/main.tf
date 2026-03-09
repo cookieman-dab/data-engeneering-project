@@ -23,18 +23,13 @@ resource "google_storage_bucket" "solar_raw" {
 }
 
 # BigQuery Datasets (3 layer)
-resource "google_bigquery_dataset" "solar_raw" {
-  dataset_id = "solar_raw"
-  location   = var.region
+locals {
+  datasets = ["solar_raw", "solar_staging", "solar_mart"]
 }
 
-resource "google_bigquery_dataset" "solar_staging" {
-  dataset_id = "solar_staging"
-  location   = var.region
-}
-
-resource "google_bigquery_dataset" "solar_mart" {
-  dataset_id = "solar_mart"
+resource "google_bigquery_dataset" "solar_datasets" {
+  for_each   = toset(local.datasets)
+  dataset_id = each.key
   location   = var.region
 }
 
@@ -45,16 +40,19 @@ resource "google_service_account" "bruin_sa" {
 }
 
 # IAM Roles
-resource "google_project_iam_member" "bruin_bigquery" {
-  project = var.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = "serviceAccount:${google_service_account.bruin_sa.email}"
+locals {
+  bruin_roles = [
+    "roles/bigquery.dataEditor",
+    "roles/storage.objectAdmin",
+    "roles/bigquery.jobUser"
+  ]
 }
 
-resource "google_project_iam_member" "bruin_storage" {
-  project = var.project_id
-  role    = "roles/storage.objectAdmin"
-  member  = "serviceAccount:${google_service_account.bruin_sa.email}"
+resource "google_project_iam_member" "bruin_sa_roles" {
+  for_each = toset(local.bruin_roles)
+  project  = var.project_id
+  role     = each.key
+  member   = "serviceAccount:${google_service_account.bruin_sa.email}"
 }
 
 # Crea automaticamente la chiave JSON

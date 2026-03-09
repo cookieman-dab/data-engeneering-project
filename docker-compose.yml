@@ -3,39 +3,49 @@ services:
     build: .
     env_file: .env
     volumes:
-      - ./secrets:/secrets/:ro
-      - ./pipeline:/app/pipeline
-    command: bruin run /app/pipeline/
+      - ./secrets:/app/secrets:ro
+      - .:/app
     environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/bruin-sa.json
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/secrets/bruin-sa.json
+    working_dir: /app
+    command: >-
+      sh -c "
+        cd /app &&
+        echo '🚀 Running Bruin pipeline...' &&
+        bruin run bruin-pipeline/ &&
+        echo '✅ Pipeline complete!'
+      "
 
   jupyter:
     build: .
     env_file: .env
     volumes:
       - ./secrets:/secrets/:ro
-      - ./notebooks:/app/notebooks      # crea prima ./notebooks/
+      - ./notebooks:/app/notebooks # crea prima ./notebooks/
     ports:
       - "8888:8888"
     command: jupyter lab --ip=0.0.0.0 --allow-root --no-browser
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/secrets/bruin-sa.json
+    working_dir: /app
 
   terraform:
     build: .
     volumes:
-      - ./secrets:/secrets/          # ✅ read-write per creare bruin-sa.json
+      - ./secrets:/secrets/ # ✅ read-write per creare bruin-sa.json
+      - ./terraform:/app/terraform # ✅ read-write per salvare terraform.tfstate
     working_dir: /app/terraform
-    command: >                      # ✅ Multi-line command
+    command: >-
       sh -c "
-        echo '🔨 Inizializzazione Terraform...'
-        terraform init &&
-        echo '📋 Plan...'
-        terraform plan &&
-        echo '🚀 Apply automatico...'
-        terraform apply -auto-approve &&
+        echo '🔨 Inizializzazione Terraform...' &&
+        terraform init -input=false &&
+        echo '📋 Plan...' &&
+        terraform plan -input=false &&
+        echo '🚀 Apply automatico...' &&
+        terraform apply -auto-approve -input=false &&
+        echo '✅ Terraform completato!'
       "
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/secrets/sa.json
-    stdin_open: false               # ❌ Non serve per comando automatico
-    tty: true                       # ✅ Utile per log colorati
+    stdin_open: false # ❌ Non serve per comando automatico
+    tty: true # ✅ Utile per log colorati
