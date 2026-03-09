@@ -8,12 +8,6 @@ variable "bucket_name" {
   type        = string
 }
 
-variable "region" {
-  description = "GCP Region"
-  type        = string
-  default     = "europe-west1"
-}
-
 variable "service_account_id" {
   description = "Service Account ID"
   type        = string

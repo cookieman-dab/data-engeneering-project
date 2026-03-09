@@ -10,13 +10,13 @@ terraform {
 # Provider SENZA credentials (usa GOOGLE_APPLICATION_CREDENTIALS dal Docker)
 provider "google" {
   project = var.project_id
-  region  = var.region
+  region  = "US"
 }
 
 # GCS Bucket per raw JSON
 resource "google_storage_bucket" "solar_raw" {
   name     = var.bucket_name
-  location = var.region
+  location = "US"
   force_destroy = true
 
   uniform_bucket_level_access = true
@@ -30,7 +30,7 @@ locals {
 resource "google_bigquery_dataset" "solar_datasets" {
   for_each   = toset(local.datasets)
   dataset_id = each.key
-  location   = var.region
+  location   = "US"
 }
 
 # Service Account per Bruin pipeline
