@@ -58,21 +58,21 @@ NASA POWER API
 
 ```
 .
-├── Dockerfile                    # Builds image with Python, Terraform & Bruin CLI
-├── docker-compose.yml            # Three services: terraform, pipeline, jupyter
-├── requirements.txt              # Python dependencies
-├── looker_1.sql                  # Looker Studio query: total kWh by location
-├── looker_2.sql                  # Looker Studio query: monthly avg kWh by location
+├── Dockerfile                          # Builds image with Python, Terraform & Bruin CLI
+├── docker-compose.yml                  # Three services: terraform, pipeline, jupyter
+├── requirements.txt                    # Python dependencies
+├── looker_1.sql                        # Looker Studio query: total kWh by location
+├── looker_2.sql                        # Looker Studio query: monthly avg kWh by location
 ├── bruin-pipeline/
-│   ├── pipeline.yml              # Pipeline name, schedule, connections
+│   ├── pipeline.yml                    # Pipeline name, schedule, connections
 │   └── assets/
-│       ├── nasa_power_ingest.py  # [Bruin] Ingest: NASA API → GCS + BQ raw
-│       ├── stg_solar_irradiance.sql  # [Bruin] Staging: clean & type raw data
-│       └── solar_production.sql  # [Bruin] Mart: compute estimated kWh
+│       ├── nasa_power_ingest.py        # [Bruin] Ingest: NASA API → GCS + BQ raw
+│       ├── stg_solar_irradiance.sql    # [Bruin] Staging: clean & type raw data
+│       └── solar_production.sql        # [Bruin] Mart: compute estimated kWh
 └── terraform/
-    ├── main.tf                   # GCS bucket, BQ datasets, service account, IAM
-    ├── variables.tf              # Input variables definition
-    └── terraform.tfvars.example  # Example variable values (copy & fill in)
+    ├── main.tf                         # GCS bucket, BQ datasets, service account, IAM
+    ├── variables.tf                    # Input variables definition
+    └── terraform.tfvars.example        # Example variable values (copy & fill in)
 ```
 
 ### Gitignored files you must create manually
