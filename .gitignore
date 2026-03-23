@@ -57,6 +57,5 @@ secrets/
 *.swp
 *.tmp
 
-.bruin.yml
 logs/runs
 logs/*.log

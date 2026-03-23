@@ -1,0 +1,11 @@
+environments:
+  default:
+    connections:
+      google_cloud_platform:
+        - name: gcp-solar
+          project_id: ${GCP_PROJECT_ID}
+          service_account_file: "/app/secrets/bruin-sa.json"
+      bigquery:
+        - name: bq-solar
+          project_id: ${GCP_PROJECT_ID}
+          service_account_file: "/app/secrets/bruin-sa.json"
