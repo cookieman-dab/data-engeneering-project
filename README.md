@@ -104,7 +104,7 @@ NASA POWER API
 ### Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/data-engeneering-project.git
+git clone https://github.com/cookieman-dab/data-engeneering-project.git
 cd data-engeneering-project
 ```
 
@@ -348,20 +348,6 @@ The Bruin pipeline is configured to run automatically on the **1st of every mont
 ```bash
 docker compose run --rm pipeline
 ```
-
----
-
-## 🛠️ Troubleshooting
-
-| Problem | Solution |
-|---|---|
-| `Error: google: could not find default credentials` | Make sure `secrets/sa.json` exists and the volume is mounted |
-| `Error: bucket name already exists` | GCS bucket names are global — choose a more unique `bucket_name` |
-| BigQuery `Not found: Dataset` | Run the Terraform step first to create the datasets |
-| NASA API returns no data | Check that `START_DATE` and `END_DATE` are in `YYYY-MM-DD` format |
-| `bruin-sa.json` not found | Terraform generates this file in `secrets/` after `apply` — re-run Terraform |
-
----
 
 ## 📄 License
 
