@@ -58,21 +58,21 @@ NASA POWER API
 
 ```
 .
-├── Dockerfile                    # Builds image with Python, Terraform & Bruin CLI
-├── docker-compose.yml            # Three services: terraform, pipeline, jupyter
-├── requirements.txt              # Python dependencies
-├── looker_1.sql                  # Looker Studio query: total kWh by location
-├── looker_2.sql                  # Looker Studio query: monthly avg kWh by location
+├── Dockerfile                          # Builds image with Python, Terraform & Bruin CLI
+├── docker-compose.yml                  # Three services: terraform, pipeline, jupyter
+├── requirements.txt                    # Python dependencies
+├── looker_1.sql                        # Looker Studio query: total kWh by location
+├── looker_2.sql                        # Looker Studio query: monthly avg kWh by location
 ├── bruin-pipeline/
-│   ├── pipeline.yml              # Pipeline name, schedule, connections
+│   ├── pipeline.yml                    # Pipeline name, schedule, connections
 │   └── assets/
-│       ├── nasa_power_ingest.py  # [Bruin] Ingest: NASA API → GCS + BQ raw
-│       ├── stg_solar_irradiance.sql  # [Bruin] Staging: clean & type raw data
-│       └── solar_production.sql  # [Bruin] Mart: compute estimated kWh
+│       ├── nasa_power_ingest.py        # [Bruin] Ingest: NASA API → GCS + BQ raw
+│       ├── stg_solar_irradiance.sql    # [Bruin] Staging: clean & type raw data
+│       └── solar_production.sql        # [Bruin] Mart: compute estimated kWh
 └── terraform/
-    ├── main.tf                   # GCS bucket, BQ datasets, service account, IAM
-    ├── variables.tf              # Input variables definition
-    └── terraform.tfvars.example  # Example variable values (copy & fill in)
+    ├── main.tf                         # GCS bucket, BQ datasets, service account, IAM
+    ├── variables.tf                    # Input variables definition
+    └── terraform.tfvars.example        # Example variable values (copy & fill in)
 ```
 
 ### Gitignored files you must create manually
@@ -90,6 +90,9 @@ NASA POWER API
 
 - **Docker Desktop** installed and running
 - A **Google Cloud Platform** project with billing enabled
+- The following **GCP APIs must be enabled** in your project:
+  - `Identity and Access Management (IAM) API`
+  - `Cloud Resource Manager API`
 - A GCP **service account key** (JSON) with at least `Owner` or the following roles:
   - `Storage Admin`
   - `BigQuery Admin`
@@ -348,6 +351,21 @@ The Bruin pipeline is configured to run automatically on the **1st of every mont
 ```bash
 docker compose run --rm pipeline
 ```
+
+## 🛠️ Troubleshooting
+
+If you run into issues during the setup, here are some common solutions:
+
+- **Error 409: The requested bucket name is not available**  
+  GCS bucket names must be globally unique across all Google Cloud users. If you get a `409 Conflict` error during `terraform apply`, change the `bucket_name` in `terraform/terraform.tfvars` and `GCP_BUCKET` in `.env` to something more unique (e.g., append your project ID or random numbers).
+
+- **Error 403: Identity and Access Management (IAM) API has not been used...** or **Cloud Resource Manager API has not been used...**  
+  Google Cloud blocks Terraform from creating resources if the necessary APIs are disabled. Click the link provided in the error message to enable the API, wait 5-10 minutes for it to propagate, and run `docker compose run --rm terraform` again.
+
+- **Bruin pipeline fails with `no such file or directory` for `bruin-sa.json`**  
+  This happens if the previous Terraform step failed. Make sure Terraform finishes successfully so it can generate the `secrets/bruin-sa.json` key needed by the pipeline.
+
+---
 
 ## 📄 License
 
