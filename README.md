@@ -94,10 +94,11 @@ NASA POWER API
   - `Identity and Access Management (IAM) API`
   - `Cloud Resource Manager API`
 - A GCP **service account key** (JSON) with at least `Owner` or the following roles:
-  - `Storage Admin`
   - `BigQuery Admin`
+  - `Security Admin`
   - `Service Account Admin`
-  - `IAM Policy Admin`
+  - `Service Account Key Admin`
+  - `Storage Admin`
 - **NASA POWER API** — no key needed, it is public
 
 ---
@@ -137,7 +138,7 @@ Edit `terraform/terraform.tfvars`:
 
 ```hcl
 project_id         = "your-gcp-project-id"
-bucket_name        = "solar-raw-your-unique-suffix"
+bucket_name        = "solar-raw-noble-sun"
 service_account_id = "bruin-sa"
 ```
 
@@ -152,7 +153,7 @@ Create a `.env` file in the project root:
 ```dotenv
 # GCP
 GCP_PROJECT_ID=your-gcp-project-id
-GCP_BUCKET=solar-raw-your-unique-suffix
+GCP_BUCKET=solar-raw-noble-sun
 
 # Pipeline parameters
 START_DATE=2020-01-01
@@ -169,7 +170,7 @@ LOCATIONS=[{"id":"Roma","lat":41.9,"lon":12.5},{"id":"Milano","lat":45.5,"lon":9
 | Variable | Description | Example |
 |---|---|---|
 | `GCP_PROJECT_ID` | Your GCP project ID | `my-solar-project` |
-| `GCP_BUCKET` | GCS bucket name (same as in tfvars) | `solar-raw-my-project` |
+| `GCP_BUCKET` | GCS bucket name (same as in tfvars) | `solar-raw-noble-sun` |
 | `START_DATE` | First date to fetch data for | `2020-01-01` |
 | `END_DATE` | Last date to fetch data for | `2024-12-31` |
 | `PANEL_AREA` | Panel surface area in m² | `1.7` |
@@ -253,8 +254,10 @@ Connect Looker Studio to BigQuery using the `solar_mart.solar_production` table.
 1. Go to [lookerstudio.google.com](https://lookerstudio.google.com)
 2. Click **Create → Report**
 3. Choose **BigQuery** as data source
-4. Select your project → `solar_mart` → `solar_production`
-5. Click **Connect**
+4. Select **Custom query** (Query personalizzata)
+5. Select your project
+6. Paste your query (see examples below)
+7. Click **Connect**
 
 ---
 
